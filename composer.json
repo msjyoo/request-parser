@@ -1,0 +1,23 @@
+{
+    "name": "sekjun9878/request-parser",
+    "version": "v1.0.0",
+    "description": "A library to parse raw HTTP requests for PHP CLI web servers and more.",
+    "keywords": ["http", "request", "parse"],
+    "homepage": "https://github.com/sekjun9878/request-parser",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Yoo",
+            "email": "michael@yoo.id.au",
+            "homepage": "https://www.michael.yoo.id.au/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": { "sekjun9878\\RequestParser\\": "src/" }
+    }
+}
