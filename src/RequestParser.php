@@ -40,6 +40,16 @@ class RequestParser
 
 	const READ_SIZE = 30000;
 
+	// HTTP Parse Errors
+	/*
+	 * These may look like HTTP status codes, but they're just codes that report the status of the parser.
+	 */
+	const BAD_REQUEST = 4;
+	const INTERNAL_SERVER_ERROR = 5;
+	const OK = 1;
+
+	private $status = self::OK;
+
 	public function __construct()
 	{
 		$this->request = new RequestState;
@@ -50,6 +60,11 @@ class RequestParser
 	 */
 	public function addData($data) //TODO: Rename this to something a bit more appropriate, like queue to read or something.
 	{
+		if($data === false or $data == "") //Invalid empty HTTP Request
+		{
+			return false;
+		}
+
 		switch($this->cur_state)
 		{
 			/** @noinspection PhpMissingBreakStatementInspection */
@@ -63,14 +78,18 @@ class RequestParser
 
 				if(strlen($this->header_buf) < 4)
 				{
-					//TODO: 400 Bad Request
+					$this->status = self::BAD_REQUEST;
+					//TODO: TODO below
+					/*
+					 * Multiple errors are not yet supported as errors will be overwritten.
+					 */
 					break;
 				}
 
 				$end_headers = strpos($this->header_buf, "\r\n\r\n", 4);
 				if($end_headers === false)
 				{
-					//TODO: 400 Bad Request
+					$this->status = self::BAD_REQUEST;
 					break;
 				}
 
@@ -90,9 +109,9 @@ class RequestParser
 				$this->request->port = $parsedUrl['port'];
 				$this->request->user = $parsedUrl['user'];
 				$this->request->pass = $parsedUrl['pass'];
-				$this->request->path = urldecode($parsedUrl['path']);
-				$this->request->query = urldecode($parsedUrl['query']);
-				$this->request->fragment = urldecode($parsedUrl['fragment']);
+				$this->request->path = $parsedUrl['path'] === NULL ? NULL : urldecode($parsedUrl['path']);
+				$this->request->query = $parsedUrl['query'] === NULL ? NULL : urldecode($parsedUrl['query']);
+				$this->request->fragment = $parsedUrl['fragment'] === NULL ? NULL : urldecode($parsedUrl['fragment']);
 
 				parse_str($this->request->query, $this->request->_GET);
 
@@ -155,6 +174,8 @@ class RequestParser
 			case self::READ_COMPLETE:
 				break;
 		}
+
+		return true;
 	}
 
 	private function readChunkedData($data)
@@ -246,6 +267,11 @@ class RequestParser
 		return $this->request->exportState();
 	}
 
+	public function getStatus()
+	{
+		return $this->status;
+	}
+
 	public static function parseHeader($headers_str)
 	{
 		$headers_arr = explode("\r\n", $headers_str);
@@ -262,6 +288,12 @@ class RequestParser
 
 				if(!isset($headers[$header_name]))
 				{
+					/*
+					 * TODO: TODO: Change so that more than one headers can be set and used e.g. Set-Cookie
+					 * https://github.com/youngj/httpserver/commit/0aa0e411d5c3bc6171c6e39d9b248415320c5060
+					 * Currently, arrays are returned on more than two headers
+					 * which would cause an error.
+					 */
 					$headers[$header_name] = $value;
 				}
 				else
