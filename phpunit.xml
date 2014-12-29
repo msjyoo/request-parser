@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+		convertErrorsToExceptions="true"
+		bootstrap="vendor/autoload.php"
+		colors="true">
+	<testsuites>
+		<testsuite name="RequestParser Test Suite">
+			<directory>src/Test/</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

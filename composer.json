@@ -17,6 +17,9 @@
     "require": {
         "php": ">=5.4.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.4.*"
+    },
     "autoload": {
         "psr-4": { "sekjun9878\\RequestParser\\": "src/" }
     }
