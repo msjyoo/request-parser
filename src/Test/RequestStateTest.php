@@ -5,6 +5,7 @@ namespace sekjun9878\RequestParser\Test;
 use PHPUnit_Framework_TestCase;
 use ReflectionObject;
 use ReflectionProperty;
+use sekjun9878\RequestParser\Request;
 use sekjun9878\RequestParser\RequestState;
 
 class RequestStateTest extends PHPUnit_Framework_TestCase
@@ -46,7 +47,7 @@ class RequestStateTest extends PHPUnit_Framework_TestCase
 		foreach($expectedProperties as $expectedPropertyKey => $expectedPropertyName)
 		{
 			$propertyKey = array_search($expectedPropertyName, $properties);
-			$this->assertNotFalse($propertyKey, "Expected Property Not Found");
+			$this->assertNotFalse($propertyKey, "Expected Property '$expectedPropertyName' Not Found");
 
 			unset($expectedProperties[$expectedPropertyKey]);
 			unset($properties[$propertyKey]);
@@ -77,5 +78,35 @@ class RequestStateTest extends PHPUnit_Framework_TestCase
 			'session_key' => "buffer_overflow_attack"
 		), $state['_POST']);
 		$this->assertEquals(false, $state['user']);
+	}
+
+	public function testRequestStatePropertiesEqualRequestProperties()
+	{
+		$requestState = new RequestState;
+		$requestStateReflection = new ReflectionObject($requestState);
+
+		$request = new Request;
+		$requestReflection = new ReflectionObject($request);
+
+		$requestStateProperties = $requestStateReflection->getProperties(ReflectionProperty::IS_PUBLIC);
+		$requestProperties = $requestReflection->getProperties(ReflectionProperty::IS_PRIVATE);
+
+		//Rebuild array to contain only the property name
+		$requestStatePropertiesNames = array();
+		$requestPropertiesNames = array();
+
+		foreach($requestStateProperties as $requestStateProperty)
+		{
+			$requestStatePropertiesNames[] = $requestStateProperty->getName();
+		}
+
+		foreach($requestProperties as $requestProperty)
+		{
+			$requestPropertiesNames[] = $requestProperty->getName();
+		}
+
+		$diff = array_diff($requestStatePropertiesNames, $requestPropertiesNames);
+		$this->assertEmpty($diff,
+			"RequestState has properties that are not present in Request:".PHP_EOL.print_r($diff, true));
 	}
 }

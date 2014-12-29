@@ -59,6 +59,11 @@ class Request
 
 	public static function create(array $array)
 	{
+		return static::__set_state($array);
+	}
+
+	public static function __set_state(array $array)
+	{
 		$request = new static;
 		$reflection = new \ReflectionObject($request);
 
@@ -70,11 +75,6 @@ class Request
 		}
 
 		return $request;
-	}
-
-	public static function __set_state(array $array)
-	{
-		return static::create($array);
 	}
 
 	/**
