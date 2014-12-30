@@ -1,7 +1,8 @@
 RequestParser
 =============
 
-[![Build Status](https://circleci.com/gh/sekjun9878/request-parser.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/sekjun9878/request-parser) [![Latest Stable Version](https://poser.pugx.org/sekjun9878/request-parser/v/stable.svg)](https://packagist.org/packages/sekjun9878/request-parser) [![Total Downloads](https://poser.pugx.org/sekjun9878/request-parser/downloads.svg)](https://packagist.org/packages/sekjun9878/request-parser) [![Latest Unstable Version](https://poser.pugx.org/sekjun9878/request-parser/v/unstable.svg)](https://packagist.org/packages/sekjun9878/request-parser) [![License](https://poser.pugx.org/sekjun9878/request-parser/license.svg)](https://packagist.org/packages/sekjun9878/request-parser)
+[![Build Status](https://circleci.com/gh/sekjun9878/request-parser.svg?circle-token=:circle-token)](https://circleci.com/gh/sekjun9878/request-parser)<br>
+[![Latest Stable Version](https://poser.pugx.org/sekjun9878/request-parser/v/stable.svg)](https://packagist.org/packages/sekjun9878/request-parser) [![Total Downloads](https://poser.pugx.org/sekjun9878/request-parser/downloads.svg)](https://packagist.org/packages/sekjun9878/request-parser) [![Latest Unstable Version](https://poser.pugx.org/sekjun9878/request-parser/v/unstable.svg)](https://packagist.org/packages/sekjun9878/request-parser) [![License](https://poser.pugx.org/sekjun9878/request-parser/license.svg)](https://packagist.org/packages/sekjun9878/request-parser)
 
 RequestParser is a PHP library for parsing raw HTTP requests.
 
@@ -22,12 +23,12 @@ straight away without a documentation, but one is coming soon hopefully.
 
 # License
 
-Copyright (c) 2014 Michael Yoo <michael@yoo.id.au>
-Released under the MIT license; see LICENSE.txt
+Copyright (c) 2014 Michael Yoo <michael@yoo.id.au><br>
+Released under the MIT license; see LICENSE.txt<br>
 https://github.com/sekjun9878/request-parser
 
 This software is a modified version of:
 
-Copyright (c) 2011, Trust for Conservation Innovation
-Released under the MIT license; see LICENSE.txt
+Copyright (c) 2011, Trust for Conservation Innovation<br>
+Released under the MIT license; see LICENSE.txt<br>
 http://github.com/youngj/httpserver
