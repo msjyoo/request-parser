@@ -4,12 +4,16 @@ RequestParser [![Build Status](https://circleci.com/gh/sekjun9878/request-parser
 
 RequestParser is a PHP library for parsing raw HTTP requests.
 
+NOTE: No Stable Release yet!
+
 This library is not a complete to-specification implementation of the HTTP protocol, but should be good enough for the purposes of a specific-purpose HTTP server such as an API server for a PHP CLI application.
 
 If in doubt, try it and see if it works for your purpose!  But don't come knocking on my door if you accidentally manage to blow up your back yard... somehow.
 
 # Features
 - Easy to use API
+- Unit Tested
+- Comes in both Composer and PHAR versions
 - Supports Transfer-Encoding: Chunked
 - Batteries included!
 	- We provide examples for you to copy paste and,

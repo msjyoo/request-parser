@@ -19,7 +19,7 @@ class RequestParser
 	protected $request;
 
 	// internal fields to track the state of reading the HTTP request
-	private $cur_state = 0;
+	private $cur_state = self::READ_HEADERS;
 	private $header_buf = '';
 	private $content_len = 0;
 	private $content_len_read = 0;
@@ -34,9 +34,11 @@ class RequestParser
 	const READ_CHUNK_DATA = 1;
 	const READ_CHUNK_TRAILER = 2;
 
-	const READ_HEADERS = 0;
-	const READ_CONTENT = 1;
-	const READ_COMPLETE = 2;
+	const READ_DISABLED = 0;
+	const READ_HEADERS = 1;
+	const READ_CONTENT = 2;
+	const PROCESS_CONTENT = 3;
+	const READ_COMPLETE = 4;
 
 	const READ_SIZE = 30000;
 
@@ -47,8 +49,9 @@ class RequestParser
 	const BAD_REQUEST = 4;
 	const INTERNAL_SERVER_ERROR = 5;
 	const OK = 1;
+	const NOT_SET = NULL;
 
-	private $status = self::OK;
+	private $status = self::NOT_SET;
 
 	public function __construct()
 	{
@@ -78,6 +81,7 @@ class RequestParser
 
 				if(strlen($this->header_buf) < 4)
 				{
+					$this->cur_state = self::READ_DISABLED;
 					$this->status = self::BAD_REQUEST;
 					//TODO: TODO below
 					/*
@@ -89,6 +93,7 @@ class RequestParser
 				$end_headers = strpos($this->header_buf, "\r\n\r\n", 4);
 				if($end_headers === false)
 				{
+					$this->cur_state = self::READ_DISABLED;
 					$this->status = self::BAD_REQUEST;
 					break;
 				}
@@ -104,14 +109,14 @@ class RequestParser
 
 				$parsedUrl = parse_url($this->request->url);
 
-				$this->request->scheme = $parsedUrl['scheme'];
-				$this->request->host = $parsedUrl['host'];
-				$this->request->port = $parsedUrl['port'];
-				$this->request->user = $parsedUrl['user'];
-				$this->request->pass = $parsedUrl['pass'];
-				$this->request->path = $parsedUrl['path'] === NULL ? NULL : urldecode($parsedUrl['path']);
-				$this->request->query = $parsedUrl['query'] === NULL ? NULL : urldecode($parsedUrl['query']);
-				$this->request->fragment = $parsedUrl['fragment'] === NULL ? NULL : urldecode($parsedUrl['fragment']);
+				$this->request->scheme = isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] : NULL;
+				$this->request->host = isset($parsedUrl['host']) ? $parsedUrl['host'] : NULL;
+				$this->request->port = isset($parsedUrl['port']) ? $parsedUrl['port'] : NULL;
+				$this->request->user = isset($parsedUrl['user']) ? $parsedUrl['user'] : NULL;
+				$this->request->pass = isset($parsedUrl['pass']) ? $parsedUrl['pass'] : NULL;
+				$this->request->path = isset($parsedUrl['path']) ? urldecode($parsedUrl['path']) : NULL;
+				$this->request->query = isset($parsedUrl['query']) ? urldecode($parsedUrl['query']) : NULL;
+				$this->request->fragment = isset($parsedUrl['fragment']) ? urldecode($parsedUrl['fragment']) : NULL;
 
 				parse_str($this->request->query, $this->request->_GET);
 
@@ -125,7 +130,7 @@ class RequestParser
 				{
 					$this->is_chunked = $this->request->headers['Transfer-Encoding'] == 'chunked';
 
-					unset($this->request->headers['Transfer-Encoding']);
+					unset($this->request->headers['Transfer-Encoding']);//TODO: Why?
 
 					$this->content_len = 0;
 				}
@@ -142,10 +147,15 @@ class RequestParser
 				$this->cur_state = self::READ_CONTENT;
 
 			// fallthrough to READ_CONTENT with leftover data
+			/** @noinspection PhpMissingBreakStatementInspection */
 			case self::READ_CONTENT:
 				if($this->is_chunked)
 				{
-					$this->readChunkedData($data);
+					if(!$this->readChunkedData($data))//If false
+					{
+						break;
+					}
+					//If chunked data reading is complete, fall through to PROCESS_CONTENT
 				}
 				else
 				{
@@ -153,31 +163,49 @@ class RequestParser
 					$this->content_len_read += strlen($data);
 
 					// On Request Read Complete
-					if($this->content_len - $this->content_len_read <= 0)
+					if($this->content_len - $this->content_len_read > 0)
 					{
-						$this->cur_state = self::READ_COMPLETE;
-
-						switch($this->request->headers['Content-Type'])
-						{
-							case 'application/x-www-form-urlencoded':
-								parse_str($this->request->body, $this->request->_POST);
-								break;
-							case 'application/json':
-								$this->request->_POST = json_decode($this->request->body, true);
-								break;
-							default:
-								$this->request->_POST = NULL;//NULL here because false can be "false"...?
-						}
+						break;//If there is more content to read, don't fallthrough to the next case statement.
 					}
 				}
-				break;
+				$this->cur_state = self::PROCESS_CONTENT;
+				//fallthrough to PROCESS_CONTENT
+			/** @noinspection PhpMissingBreakStatementInspection */
+			case self::PROCESS_CONTENT:
+				if(isset($this->request->headers['Content-Type']))
+				{
+					switch($this->request->headers['Content-Type'])
+					{
+						case 'application/x-www-form-urlencoded':
+							parse_str($this->request->body, $this->request->_POST);
+							break;
+						case 'application/json':
+							$this->request->_POST = json_decode($this->request->body, true);
+							break;
+						default:
+							$this->request->_POST = array();//NULL here because false can be "false"...?
+					}
+				}
+				else
+				{
+					$this->request->_POST = array();
+				}
+
+				$this->status = self::OK;
+				$this->cur_state = self::READ_COMPLETE;
+				//fallthrough to READ_COMPLETE
 			case self::READ_COMPLETE:
+				break;
+			case self::READ_DISABLED:
 				break;
 		}
 
 		return true;
 	}
 
+	/**
+	 * @param string $data
+	 */
 	private function readChunkedData($data)
 	{
 		while(isset($data[0])) // keep processing chunks until we run out of data
@@ -198,22 +226,22 @@ class RequestParser
 					// done with chunk header
 					$chunk_header = substr($this->chunk_header_buf, 0, $end_chunk_header);
 
-					list($chunk_len_hex) = explode(";", $chunk_header, 2);
+					$chunk_len_hex = explode(";", $chunk_header, 2)[0];
 
 					$this->chunk_len_remaining = intval($chunk_len_hex, 16);
 
 					$this->chunk_state = self::READ_CHUNK_DATA;
 
-					$data = substr($this->chunk_header_buf, $end_chunk_header + 2);
+					$data = substr($this->chunk_header_buf, $end_chunk_header + 2/* two for carriage return */);
 					$this->chunk_header_buf = '';
 
-					if($this->chunk_len_remaining == 0)
+					if($this->chunk_len_remaining == 0)//If this is the terminating chunk
 					{
-						$this->cur_state = self::READ_COMPLETE;
-						$this->request->headers['Content-Length'] = array($this->content_len);
+						$this->cur_state = self::PROCESS_CONTENT;
+						$this->request->headers['Content-Length'] = $this->content_len;
 
 						// todo: this is where we should process trailers...
-						return;
+						return true;
 					}
 
 				// fallthrough to READ_CHUNK_DATA with leftover data
@@ -252,6 +280,8 @@ class RequestParser
 					break;
 			}
 		}
+
+		return false;
 	}
 
 	/*
@@ -259,7 +289,7 @@ class RequestParser
 	 */
 	public function isFullyRead()
 	{
-		return $this->cur_state == self::READ_COMPLETE;
+		return ($this->cur_state === self::READ_COMPLETE) || ($this->cur_state === self::READ_DISABLED);
 	}
 
 	public function exportRequestState()

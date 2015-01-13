@@ -58,13 +58,36 @@ class RequestTest extends PHPUnit_Framework_TestCase
 		$request = Request::__set_state($requestState->exportState());
 
 		$requestReflection = new ReflectionObject($request);
-		$requestProperties = $requestReflection->getProperties();
+		$requestMethods = $requestReflection->getMethods();
 
-		foreach($requestProperties as $requestProperty)
+		foreach($requestMethods as $requestMethod)
 		{
-			$requestProperty->setAccessible(true);
-			$this->assertEquals($value, $requestProperty->getValue($request),
-				"Property '{$requestProperty->getName()}' does not equal expected $value after __set_state()");
+			if(substr($requestMethod->getName(), 0, 3) === "get")
+			{
+				$this->assertEquals($value, $requestMethod->invoke($request),
+					"Getter Method '{$requestMethod->getName()}' does not equal expected $value after __set_state()");
+			}
 		}
+	}
+
+	public function testRequestCreateEqualsRequestSetState()
+	{
+		$value = sha1((string) mt_rand());
+
+		$requestState = new RequestState;
+
+		$requestStateReflection = new ReflectionObject($requestState);
+
+		$requestStateProperties = $requestStateReflection->getProperties(ReflectionProperty::IS_PUBLIC);
+
+		foreach($requestStateProperties as $requestStateProperty)
+		{
+			$requestStateProperty->setValue($requestState, $value);
+		}
+
+		$request1 = Request::__set_state($requestState->exportState());
+		$request2 = Request::create($requestState->exportState());
+
+		$this->assertEquals($request1, $request2);
 	}
 }
