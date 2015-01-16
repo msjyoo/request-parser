@@ -26,11 +26,11 @@ straight away without a documentation, but one is coming soon hopefully.
 # License
 
 Copyright (c) 2014 Michael Yoo <michael@yoo.id.au><br>
-Released under the MIT license; see LICENSE.txt<br>
+Released under the MIT license; see LICENSE<br>
 https://github.com/sekjun9878/request-parser
 
 This software is a modified version of:
 
 Copyright (c) 2011, Trust for Conservation Innovation<br>
-Released under the MIT license; see LICENSE.txt<br>
+Released under the MIT license; see LICENSE<br>
 http://github.com/youngj/httpserver

@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright (c) 2014 Michael Yoo <michael@yoo.id.au>
- * Released under the MIT license; see LICENSE.txt
+ * Released under the MIT license; see LICENSE
  * https://github.com/sekjun9878/request-parser
  */
 

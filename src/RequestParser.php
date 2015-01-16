@@ -1,13 +1,13 @@
 <?php
 /*
  * Copyright (c) 2014 Michael Yoo <michael@yoo.id.au>
- * Released under the MIT license; see LICENSE.txt
+ * Released under the MIT license; see LICENSE
  * https://github.com/sekjun9878/request-parser
  *
  * This software is a modified version of:
  *
  * Copyright (c) 2011, Trust for Conservation Innovation
- * Released under the MIT license; see LICENSE.txt
+ * Released under the MIT license; see LICENSE
  * http://github.com/youngj/httpserver
  */
 

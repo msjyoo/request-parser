@@ -2,3 +2,5 @@
 /.idea/
 /vendor/
 /coverage/
+/box.json
+/build/request-parser.phar

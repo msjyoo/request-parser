@@ -1,0 +1,20 @@
+{
+  "algorithm": "SHA512",
+  "compression": "GZ",
+  "alias": "request-parser.phar",
+  "chmod": "0755",
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [
+        "Test"
+      ],
+      "in": "src"
+    }
+  ],
+  "files": [
+    "LICENSE"
+  ],
+  "output": "build/request-parser.phar",
+  "stub": true
+}
