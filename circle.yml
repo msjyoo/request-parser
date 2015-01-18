@@ -10,17 +10,21 @@ dependencies:
     # Disable phar.readonly
     - sed -i 's/^;phar.readonly/phar.readonly/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
     - sed -i 's/phar.readonly\s=\sOn/phar.readonly = Off/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
+    # Make directories for Box phar builder
+    - mkdir build
+    - mkdir $CIRCLE_ARTIFACTS/build
 
 test:
   override:
     - phpunit --coverage-html $CIRCLE_ARTIFACTS/coverage
 
-general:
-  artifacts:
-    - "build/"
-
 deployment:
   build_phar:
     branch: master
     commands:
-      - vendor/bin/box build
+      - >
+        vendor/bin/box build &&
+        echo Build Complete! &&
+        echo Moving Artifacts... &&
+        mv build/request-parser.phar $CIRCLE_ARTIFACTS/build/ &&
+        echo Complete!
