@@ -52,5 +52,6 @@ $request = Request::create($requestParser->exportRequestState());
 
 var_dump($request);
 
+fwrite($connectionSocket, "HTTP/1.1 200 OK\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Length: ".mb_strlen("Hello World!")."\r\n\r\nHello World!");
 fclose($connectionSocket);
 fclose($listenSocket);
