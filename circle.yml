@@ -5,8 +5,11 @@ machine:
 
 dependencies:
   pre:
-    # Enable XDebug.
+    # Enable xdebug
     - sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
+    # Disable phar.readonly
+    - sed -i 's/^;phar.readonly/phar.readonly/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
+    - sed -i 's/phar.readonly\s=\sOn/phar.readonly = Off/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
 
 test:
   override:
