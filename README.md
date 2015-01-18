@@ -6,13 +6,13 @@ RequestParser is a PHP library for parsing raw HTTP requests.
 
 NOTE: No Stable Release yet!
 
-This library is not a complete to-specification implementation of the HTTP protocol, but should be good enough for the purposes of a specific-purpose HTTP server such as an API server for a PHP CLI application.
+This library is not a complete to-specification implementation of the HTTP/1.1 protocol (because doing that would be extremely difficult and unnecessary), but implements most of the spec and should be good enough for the purposes of a specific-purpose HTTP server such as an API server for a PHP CLI application.
 
 If in doubt, try it and see if it works for your purpose!  But don't come knocking on my door if you accidentally manage to blow up your back yard... somehow.
 
 # Features
-- Easy to use API
-- Unit Tested
+- Easy to use
+- Unit tested
 - Comes in both Composer and PHAR versions
 - Supports Transfer-Encoding: Chunked
 - Batteries included!
@@ -20,17 +20,56 @@ If in doubt, try it and see if it works for your purpose!  But don't come knocki
 	- We return a default Request object for you to use instantly
 
 # Examples
-You can find examples in the `examples/` folder. The library is simple enough to use
+Here is a quick example to demonstrate how easy it is to instantly get started:
+```
+$requestParser = new RequestParser;
+$requestParser->addData("GET /democracy/init HTTP/1.1\r\nUser-Agent: The Illuminati/2.0\r\nContent-Length: 10\r\n\r\nOver 9000!");
+
+$request = Request::create($requestParser->exportRequestState());
+
+var_dump($request->getHeaders());
+var_dump($request->getPOST());
+```
+
+You can find more examples in the `examples/` folder. The library is simple enough to use
 straight away without a documentation, but one is coming soon hopefully.
+
+# Installation
+## Composer
+request-parser is PSR-4 compliant and can be installed using Composer. Simply add sekjun9878/request-parser to your composer.json file. *Composer is the sane alternative to PEAR. It is excellent for managing dependencies in larger projects.*
+```
+{
+    "require": {
+        "sekjun9878/request-parser": "~1.0"
+    }
+}
+```
+
+or
+
+```
+php composer.phar require sekjun9878/request-parser ~1.0
+```
+## PHAR
+A [PHP Archive](http://php.net/manual/en/book.phar.php) (or .phar) file is available for [downloading](https://www.michael.yoo.id.au/projects/request-parser/api/download-latest-build.php).  Simply [download](https://www.michael.yoo.id.au/projects/request-parser/api/download-latest-build.php) the .phar, drop it into your project, and include it like you would any other php file.  *This method is ideal for smaller projects, one off scripts, and quick API hacking.*
+
+```
+require_once(__DIR__."/request-parser.phar");
+```
+
+# Downloads
+For installation, see the installation notes above.
+
+Download request-parser.phar [here](https://www.michael.yoo.id.au/projects/request-parser/api/download-latest-build.php).
+
+Additional links:
+
+API to return the URL to download the latest build from: https://www.michael.yoo.id.au/projects/request-parser/api/latest-build-url.php
 
 # License
 
-Copyright (c) 2014 Michael Yoo <michael@yoo.id.au><br>
-Released under the MIT license; see LICENSE<br>
+Copyright (c) 2014 Michael Yoo <michael@yoo.id.au>
+Released under the MIT license; see LICENSE
 https://github.com/sekjun9878/request-parser
 
-This software is a modified version of:
-
-Copyright (c) 2011, Trust for Conservation Innovation<br>
-Released under the MIT license; see LICENSE<br>
-http://github.com/youngj/httpserver
+This project contains portions of source code from other projects; see LICENSE.
