@@ -61,7 +61,7 @@ class RequestParser
 	/*
 	 * Reads a chunk of a HTTP request from a client socket.
 	 */
-	public function addData($data) //TODO: Rename this to something a bit more appropriate, like queue to read or something.
+	public function addData($data)
 	{
 		if($data === false or $data == "") //Invalid empty HTTP Request
 		{
@@ -100,7 +100,7 @@ class RequestParser
 
 				// parse HTTP request line
 				$end_req = strpos($this->header_buf, "\r\n");
-				$requestLine = substr($this->header_buf, 0, $end_req);//TODO: ?
+				$requestLine = substr($this->header_buf, 0, $end_req);//RequestLine isn't really required here.
 				$req_arr = explode(' ', $requestLine, 3);
 
 				$this->request->method = $req_arr[0];
