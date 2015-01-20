@@ -16,5 +16,5 @@
     "LICENSE"
   ],
   "output": "build/request-parser.phar",
-  "stub": true
+  "stub": "PharStub.php"
 }
