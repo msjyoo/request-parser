@@ -49,7 +49,7 @@ or
 php composer.phar require sekjun9878/request-parser ~1.0
 ```
 ## PHAR
-A [PHP Archive](http://php.net/manual/en/book.phar.php) (or .phar) file is available for [downloading](https://www.michael.yoo.id.au/projects/request-parser/api/download-latest-build.php).  Simply [download](https://www.michael.yoo.id.au/projects/request-parser/api/download-latest-build.php) the .phar, drop it into your project, and include it like you would any other php file.  *This method is ideal for smaller projects, one off scripts, and quick API hacking.*
+A [PHP Archive](http://php.net/manual/en/book.phar.php) (or .phar) file is available for [downloading](https://github.com/sekjun9878/request-parser/releases/latest).  Simply [download](https://github.com/sekjun9878/request-parser/releases/latest) the .phar, drop it into your project, and include it like you would any other php file.  *This method is ideal for smaller projects, one off scripts, and quick API hacking.*
 
 ```
 require_once(__DIR__."/request-parser.phar");
@@ -58,11 +58,12 @@ require_once(__DIR__."/request-parser.phar");
 # Downloads
 For installation, see the installation notes above.
 
-Download request-parser.phar [here](https://www.michael.yoo.id.au/projects/request-parser/api/download-latest-build.php).
+Download latest stable request-parser.phar [here](https://github.com/sekjun9878/request-parser/releases/latest).
+Download latest master request-parser.phar [here](https://www.michael.yoo.id.au/projects/request-parser/api/download-latest-build.php).
 
 Additional links:
 
-API to return the URL to download the latest build from: https://www.michael.yoo.id.au/projects/request-parser/api/latest-build-url.php
+API to return the URL to download the latest master build from: https://www.michael.yoo.id.au/projects/request-parser/api/latest-build-url.php
 
 # License
 ```
