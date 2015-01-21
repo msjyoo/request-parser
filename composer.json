@@ -1,6 +1,6 @@
 {
     "name": "sekjun9878/request-parser",
-    "version": "v1.0.0",
+    "version": "v1.0.1",
     "description": "A library to parse raw HTTP requests for PHP CLI web servers and more.",
     "keywords": ["http", "request", "parse"],
     "homepage": "https://github.com/sekjun9878/request-parser",

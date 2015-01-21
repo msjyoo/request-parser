@@ -5,6 +5,8 @@
  * https://github.com/sekjun9878/request-parser
  */
 
+/* Package Version v1.0.1 */
+
 if(class_exists('Phar'))
 {
 	Phar::mapPhar('request-parser.phar');
