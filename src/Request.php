@@ -7,6 +7,13 @@
 
 namespace sekjun9878\RequestParser;
 
+/**
+ * A usable Request object. See RequestState.php for more detail.
+ *
+ * @package sekjun9878\RequestParser
+ * @author Michael Yoo <michael@yoo.id.au>
+ * @see https://github.com/sekjun9878/request-parser
+ */
 class Request
 {
 	/** @var string */
@@ -57,11 +64,19 @@ class Request
 	/** @var string */
 	private $body;
 
+	/**
+	 * @param array $array
+	 * @return static
+	 */
 	public static function create(array $array)
 	{
 		return static::__set_state($array);
 	}
 
+	/**
+	 * @param array $array
+	 * @return static
+	 */
 	public static function __set_state(array $array)
 	{
 		$request = new static;

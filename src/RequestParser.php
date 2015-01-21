@@ -13,6 +13,14 @@
 
 namespace sekjun9878\RequestParser;
 
+/**
+ * RequestParser is a class to parse HTTP raw requests.
+ *
+ * @package sekjun9878\RequestParser
+ * @author Michael Yoo <michael@yoo.id.au>
+ * @author Jesse Young
+ * @see https://github.com/sekjun9878/request-parser
+ */
 class RequestParser
 {
 	/** @var RequestState A RequestState object that can be exported later to a Request object. */
@@ -58,8 +66,11 @@ class RequestParser
 		$this->request = new RequestState;
 	}
 
-	/*
-	 * Reads a chunk of a HTTP request from a client socket.
+	/**
+	 * Add data to the Parser. Accepts both entire requests or a series of parts of requests.
+	 *
+	 * @param string $data
+	 * @return bool
 	 */
 	public function addData($data)
 	{
@@ -204,7 +215,10 @@ class RequestParser
 	}
 
 	/**
+	 * A private method to read chunked HTTP requests.
+	 *
 	 * @param string $data
+	 * @return bool
 	 */
 	private function readChunkedData($data)
 	{
@@ -284,24 +298,43 @@ class RequestParser
 		return false;
 	}
 
-	/*
+	/**
 	 * Returns true if a full HTTP request has been read by addData().
+	 *
+	 * @return bool
 	 */
 	public function isFullyRead()
 	{
 		return ($this->cur_state === self::READ_COMPLETE) || ($this->cur_state === self::READ_DISABLED);
 	}
 
+	/**
+	 * Export the state of the RequestState. Contains the parsed data.
+	 *
+	 * @return array
+	 */
 	public function exportRequestState()
 	{
 		return $this->request->exportState();
 	}
 
+	/**
+	 * Returns the HTTP status code of the Parser. This is need to distinguish between fatal errors (false and exit)
+	 * and graceful errors (status codes)
+	 *
+	 * @return null|int
+	 */
 	public function getStatus()
 	{
 		return $this->status;
 	}
 
+	/**
+	 * Parse a raw HTTP header string to an array.
+	 *
+	 * @param $headers_str
+	 * @return array
+	 */
 	public static function parseHeader($headers_str)
 	{
 		$headers_arr = explode("\r\n", $headers_str);
